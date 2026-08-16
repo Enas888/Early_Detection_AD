@@ -1,0 +1,2 @@
+experiment_id,task,classifier,fusion_type
+glcm_narrow_svm,cn_vs_emci,svm,narrow

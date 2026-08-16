@@ -1,0 +1,11 @@
+nibabel
+numpy
+scikit-learn
+pandas
+matplotlib
+seaborn
+dipy
+antspyx
+pennylane
+qiskit
+jupyter

@@ -1,0 +1,170 @@
+# config/experiment_config.yaml
+
+# WHY this structure?
+# Each experiment ID uniquely identifies one combination of:
+# feature_type × fusion_type × pipeline × classifier
+# This lets run_all_experiments.py loop through all combinations
+# from one config file without changing any code.
+# ============================================================
+# TASKS
+# ============================================================
+
+tasks:
+  binary:
+    - "cn_vs_ad"
+    - "cn_vs_emci"
+    - "cn_vs_lmci"
+
+  multiclass:
+    - "four_class"
+
+
+# ============================================================
+# EVALUATION
+# ============================================================
+
+evaluation:
+
+  cv_folds: 5
+
+  selection_metric: "balanced_accuracy"
+
+  imbalance_strategy: "class_weight"
+
+  random_state: 42
+
+  use_validation: true
+
+  test_once: false
+
+
+# ============================================================
+# CLASSIFIERS
+# ============================================================
+
+# Classifier definitions belong here because they describe
+# EXPERIMENTAL MODEL CONFIGURATION, not dataset configuration.
+
+classifiers:
+
+  svm:
+    class_weight: "balanced"
+    n_estimators: 300
+    random_state: 42
+
+  svm:
+    class_weight: "balanced"
+    probability: true
+    random_state: 42
+
+  logistic_regression:
+    class_weight: "balanced"
+    random_state: 42
+
+
+# ============================================================
+# EXPERIMENTS
+# ============================================================
+
+experiments:
+
+  # ----------------------------------------------------------
+  # SINGLE-SCALE GLCM
+  # ----------------------------------------------------------
+
+  - id: "glcm_narrow_svm"
+    feature_type: "glcm"
+    fusion_type: "narrow"
+    pipeline: "classical"
+    classifier: "svm"
+
+  - id: "glcm_original_svm"
+    feature_type: "glcm"
+    fusion_type: "original"
+    pipeline: "classical"
+    classifier: "svm"
+
+  - id: "glcm_wide_svm"
+    feature_type: "glcm"
+    fusion_type: "wide"
+    pipeline: "classical"
+    classifier: "svm"
+
+
+  # ----------------------------------------------------------
+  # FEATURE-LEVEL FUSION
+  # ----------------------------------------------------------
+
+  - id: "glcm_feature_svm"
+    feature_type: "glcm"
+    fusion_type: "feature"
+    pipeline: "classical"
+    classifier: "svm"
+
+
+  # ----------------------------------------------------------
+  # DECISION-LEVEL FUSION
+  # ----------------------------------------------------------
+
+  - id: "glcm_decision_svm"
+    feature_type: "glcm"
+    fusion_type: "decision"
+    pipeline: "classical"
+    classifier: "svm"
+
+  # - id: "glcm_decision_svm"
+  #   feature_type: "glcm"
+  #   fusion_type: "decision"
+  #   pipeline: "classical"
+  #   classifier: "svm"
+
+  # ── CLASSICAL: HOG ──────────────────────────────────────────
+  # - id: "hog_feature_svm"
+  #   feature_type: "hog"
+  #   fusion_type:  "feature"
+  #   pipeline:     "classical"
+  #   classifier:   "svm"
+
+  # - id: "hog_decision_svm"
+  #   feature_type: "hog"
+  #   fusion_type:  "decision"
+  #   pipeline:     "classical"
+  #   classifier:   "svm"
+
+  # - id: "hog_feature_svm"
+  #   feature_type: "hog"
+  #   fusion_type:  "feature"
+  #   pipeline:     "classical"
+  #   classifier:   "svm"
+
+  # - id: "hog_decision_svm"
+  #   feature_type: "hog"
+  #   fusion_type:  "decision"
+  #   pipeline:     "classical"
+  #   classifier:   "svm"
+
+  # # ── QUANTUM: GLCM ───────────────────────────────────────────
+  # - id: "glcm_feature_vqc"
+  #   feature_type: "glcm"
+  #   fusion_type:  "feature"
+  #   pipeline:     "quantum"
+  #   classifier:   "vqc"
+
+  # - id: "glcm_decision_vqc"
+  #   feature_type: "glcm"
+  #   fusion_type:  "decision"
+  #   pipeline:     "quantum"
+  #   classifier:   "vqc"
+
+  # # ── QUANTUM: HOG ────────────────────────────────────────────
+  # - id: "hog_feature_vqc"
+  #   feature_type: "hog"
+  #   fusion_type:  "feature"
+  #   pipeline:     "quantum"
+  #   classifier:   "vqc"
+
+  # - id: "hog_decision_vqc"
+  #   feature_type: "hog"
+  #   fusion_type:  "decision"
+  #   pipeline:     "quantum"
+  #   classifier:   "vqc"

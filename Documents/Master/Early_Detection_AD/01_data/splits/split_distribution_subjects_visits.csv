@@ -1,0 +1,7 @@
+,Subjects,Subjects,Subjects,Visits,Visits,Visits
+,Train,Val,Test,Train,Val,Test
+AD,59,13,12,175,32,31
+CN,87,18,19,298,67,71
+EMCI,118,25,26,484,96,78
+LMCI,59,13,13,211,41,42
+MCI,0,0,0,0,0,0

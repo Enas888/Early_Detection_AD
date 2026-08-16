@@ -1,0 +1,51 @@
+paths:
+  csv_dir: "/home/enooo/Documents/Master/Early_Detection_AD/01_data/csv"
+
+  processed_dir: "/home/enooo/Documents/Master/Early_Detection_AD/01_data/processed/classes_affine"
+
+  splits_dir: "/home/enooo/Documents/Master/Early_Detection_AD/01_data/splits"
+
+  results_dir: "/home/enooo/Documents/Master/Early_Detection_AD/08_results"
+
+  metadata_csv: "master_metadata_affine_3t.csv"
+
+  atlas_path: "/home/enooo/fsl/data/atlases/Juelich/Juelich-maxprob-thr50-1mm.nii.gz"
+
+
+voi:
+
+  # Three spatial-context scales:
+  # 0.8: tighter ROI, reducing surrounding/background tissue
+  # 1.0: atlas-defined reference bounding box
+  # 1.2: moderate contextual expansion for anatomical/registration variability
+  #    anatomical variability without excessive background inclusion
+  #    and residual localization uncertainty after registration.
+
+  # The three scales are treated as experimental design choices.
+  
+  # Per-subject center-offset analysis suggested that ~1.5 would be
+  # required to approximately cover ±2 SD of the observed displacement.
+  # A conservative 1.2 scale is used to avoid excessive background tissue.
+
+  scales:
+    narrow: 0.8
+    original: 1.0
+    wide: 1.2
+
+  roi_labels: [6, 7, 8, 9, 10, 11, 16, 17, 20, 21, 25, 18, 19]
+
+
+dataset:
+  field_strength: 3.0
+  exclude_classes: ["MCI"]
+
+
+split:
+  train: 0.70
+  val: 0.15
+  test: 0.15
+  random_state: 42
+
+
+classes:
+  target: ["CN", "EMCI", "LMCI", "AD"]

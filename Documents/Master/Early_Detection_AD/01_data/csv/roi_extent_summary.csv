@@ -1,0 +1,2 @@
+plane,roi_first_slice,roi_last_slice,roi_width,roi_voxels,K,coverage
+axial,26,129,104,31539,96,0.9221598655632709

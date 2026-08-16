@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Data and large files
+*.nii
+*.nii.gz
+*.npz
+*.h5
+*.pkl
+*.log
+
+# Project specific
+01_data/raw/*
+01_data/processed/*
+!01_data/processed/.gitkeep
+04_results/models/*
+
+# Environment
+.env
+.venv
+venv/
+ENV/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# OS
+.DS_Store
+Thumbs.db
