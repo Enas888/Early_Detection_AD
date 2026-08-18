@@ -1,0 +1,2 @@
+experiment_id,task,classifier,fusion_type
+glcm_decision_mlp,cn_vs_ad,mlp,decision

@@ -85,12 +85,19 @@ sys.path.insert(0, str(FUSION_DIR))
 EXPERIMENTS_DIR = PROJECT_ROOT / "06_experiments"
 sys.path.insert(0, str(EXPERIMENTS_DIR))
 
+QUANTUM_CLASSIFIER_DIR = (
+    PROJECT_ROOT / "04_classifiers" / "quantum"
+)
+
+sys.path.insert(0, str(QUANTUM_CLASSIFIER_DIR))
+
 
 # ============================================================
 # PROJECT IMPORTS
 # ============================================================
 
-from classifier_factory import create_classifier
+from quantum_classifier_factory import create_quantum_classifier
+
 from feature_fusion import feature_fusion
 from decision_fusion import decision_fusion_predict
 
@@ -249,7 +256,7 @@ def run_single_scale_cv(
         # Fresh classifier for every fold.
         # ----------------------------------------------------
 
-        model = create_classifier(
+        model = create_quantum_classifier(
             classifier_name,
             classifier_config,
         )
@@ -362,7 +369,7 @@ def run_feature_fusion_cv(
             f"      Fold {fold_idx}/{cv_folds}"
         )
 
-        model = create_classifier(
+        model = create_quantum_classifier(
             classifier_name,
             classifier_config,
         )
@@ -499,7 +506,7 @@ def run_decision_fusion_cv(
 
         for scale in scales:
 
-            model = create_classifier(
+            model = create_quantum_classifier(
                 classifier_name,
                 classifier_config,
             )
@@ -632,13 +639,15 @@ def run_experiment(
         42,
     )
 
-    classifier_cfg = (
-        experiment_cfg[
-            "classifiers"
-        ][
-            classifier_name
-        ]
-    )
+    # WHY: quantum classifiers are stored under a separate key
+    # in experiment_config.yaml to keep classical and quantum
+    # hyperparameters cleanly separated.
+    pipeline = experiment.get("pipeline", "classical")
+
+    if pipeline == "quantum":
+        classifier_cfg = experiment_cfg["quantum_classifiers"][classifier_name]
+    else:
+        classifier_cfg = experiment_cfg["classifiers"][classifier_name]
 
     tasks = (
         experiment_cfg[
@@ -973,7 +982,7 @@ def main():
     # )
 
     # --------------------------------------------------------
-    # Run only configured classical GLCM experiments.
+    # Run only configured quantum GLCM experiments.
     # --------------------------------------------------------
 
     experiments = (
@@ -986,7 +995,7 @@ def main():
     all_results = []
 
     for experiment in experiments:
-        if experiment.get("pipeline") != "classical":
+        if experiment.get("pipeline") != "quantum":
             continue
         if experiment.get("feature_type") != "glcm":
             continue
@@ -995,24 +1004,18 @@ def main():
             experiment, train_datasets, experiment_cfg)
         all_results.extend(task_results)
 
-    # ── Final summary table ───────────────────────────────────────
-    print("\n" + "=" * 75)
-    print("FINAL CV RESULTS SUMMARY — ALL EXPERIMENTS")
-    print("=" * 75)
-
-    summary_df = pd.DataFrame(all_results)
-
-    # Print to terminal
-    print(summary_df[[
-        'experiment_id', 'task',
-        'accuracy', 'balanced_acc', 'f1', 'roc_auc'
-    ]].to_string(index=False))
-
-    # Save to CSV
-    summary_path = PROJECT_ROOT / "08_results" / "all_experiments_summary_vqc.csv"
-    summary_path.parent.mkdir(parents=True, exist_ok=True)
-    summary_df.to_csv(summary_path, index=False)
-    print(f"\nSummary saved → {summary_path}")
+    if not all_results:
+        print("\nNo experiments ran — check pipeline filter and YAML spelling.")
+    else:
+        summary_df = pd.DataFrame(all_results)
+        print(summary_df[[
+            'experiment_id', 'task',
+            'accuracy', 'balanced_acc', 'f1', 'roc_auc'
+        ]].to_string(index=False))
+        summary_path = PROJECT_ROOT / "08_results" / "all_experiments_summary_vqc.csv"
+        summary_path.parent.mkdir(parents=True, exist_ok=True)
+        summary_df.to_csv(summary_path, index=False)
+        print(f"\nSummary saved → {summary_path}")
 
 # ============================================================
 # ENTRY POINT

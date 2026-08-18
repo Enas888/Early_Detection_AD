@@ -1,0 +1,2 @@
+experiment_id,task,classifier,fusion_type
+glcm_narrow_vqc_cuda,cn_vs_emci,vqc,narrow

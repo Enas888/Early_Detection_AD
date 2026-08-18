@@ -33,7 +33,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
 
-
+from sklearn.neural_network import MLPClassifier
 # ============================================================
 # RANDOM FOREST
 # ============================================================
@@ -95,6 +95,68 @@ def make_logistic_regression(params: Dict[str, Any]):
         C=params.get("C", 1.0),
     )
 
+# ============================================================
+# MLP
+# ============================================================
+
+def make_mlp(params: Dict[str, Any]):
+    """
+    Create an MLP classifier.
+
+    Designed for low-dimensional handcrafted features such as GLCM.
+
+    Parameters come from experiment_config.yaml.
+    """
+
+    return MLPClassifier(
+        hidden_layer_sizes=tuple(
+            params.get("hidden_layer_sizes", [32, 16])
+        ),
+        activation=params.get("activation", "relu"),
+        solver=params.get("solver", "adam"),
+
+        alpha=params.get("alpha", 0.0001),
+
+        learning_rate_init=params.get(
+            "learning_rate_init",
+            0.001
+        ),
+
+        max_iter=params.get(
+            "max_iter",
+            300
+        ),
+
+        batch_size=params.get(
+            "batch_size",
+            "auto"
+        ),
+
+        early_stopping=params.get(
+            "early_stopping",
+            True
+        ),
+
+        validation_fraction=params.get(
+            "validation_fraction",
+            0.15
+        ),
+
+        n_iter_no_change=params.get(
+            "n_iter_no_change",
+            20
+        ),
+
+        tol=params.get(
+            "tol",
+            1e-4
+        ),
+
+        random_state=params.get(
+            "random_state",
+            42
+        ),
+    )
 
 # ============================================================
 # FACTORY REGISTRY
@@ -107,9 +169,9 @@ CLASSIFIER_FACTORIES = {
     "svm": make_svm,
 
     "logistic_regression": make_logistic_regression,
+
+    "mlp": make_mlp,
 }
-
-
 # ============================================================
 # PUBLIC FACTORY FUNCTION
 # ============================================================

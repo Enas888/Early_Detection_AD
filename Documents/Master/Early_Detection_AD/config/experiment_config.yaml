@@ -47,20 +47,64 @@ evaluation:
 
 classifiers:
 
-  svm:
-    class_weight: "balanced"
+  rf:
+    class_weight: balanced
     n_estimators: 300
     random_state: 42
 
   svm:
-    class_weight: "balanced"
+    class_weight: balanced
     probability: true
     random_state: 42
 
   logistic_regression:
-    class_weight: "balanced"
+    class_weight: balanced
     random_state: 42
 
+  mlp:
+    hidden_layer_sizes: [32, 16]
+    activation: relu
+    solver: adam
+
+    alpha: 0.0001
+
+    learning_rate_init: 0.001
+
+    max_iter: 300
+
+    batch_size: 32
+
+    early_stopping: true
+    validation_fraction: 0.15
+    n_iter_no_change: 20
+
+    tol: 0.0001
+
+    random_state: 42
+
+quantum_classifiers:
+
+  vqc:                    # single-scale (6 features)
+    n_qubits: 6
+    n_layers: 2
+    epochs: 40
+    learning_rate: 0.01
+    
+    batch_size: 64
+    early_stopping: true
+    patience: 8
+    device: "lightning.gpu"    # ← RTX 3080    random_state: 42
+
+  vqc_fused:              # feature-level fusion (18 features)
+    n_qubits: 18
+    n_layers: 2
+    epochs: 40
+    learning_rate: 0.01
+    batch_size: 64
+    early_stopping: true
+    patience: 8
+    device: "lightning.gpu"    # ← RTX 3080
+    random_state: 42
 
 # ============================================================
 # EXPERIMENTS
@@ -72,98 +116,98 @@ experiments:
   # SINGLE-SCALE GLCM
   # ----------------------------------------------------------
 
-  - id: "glcm_narrow_svm"
+  - id: "glcm_narrow_vqc_cuda"
     feature_type: "glcm"
     fusion_type: "narrow"
-    pipeline: "classical"
-    classifier: "svm"
+    pipeline: "quantum"
+    classifier: "vqc"
 
-  - id: "glcm_original_svm"
+  - id: "glcm_original_vqc_cuda"
     feature_type: "glcm"
     fusion_type: "original"
-    pipeline: "classical"
-    classifier: "svm"
+    pipeline: "quantum"
+    classifier: "vqc"
 
-  - id: "glcm_wide_svm"
+  - id: "glcm_wide_vqc_cuda"
     feature_type: "glcm"
     fusion_type: "wide"
-    pipeline: "classical"
-    classifier: "svm"
+    pipeline: "quantum"
+    classifier: "vqc"
 
 
   # ----------------------------------------------------------
   # FEATURE-LEVEL FUSION
   # ----------------------------------------------------------
 
-  - id: "glcm_feature_svm"
+  - id: "glcm_feature_vqc_cuda"
     feature_type: "glcm"
     fusion_type: "feature"
-    pipeline: "classical"
-    classifier: "svm"
+    pipeline: "quantum"
+    classifier: "vqc_fused"  # use vqc_fused not vqc q = 3 x 6 = 18 features
 
 
   # ----------------------------------------------------------
   # DECISION-LEVEL FUSION
   # ----------------------------------------------------------
 
-  - id: "glcm_decision_svm"
+  - id: "glcm_decision_vqc_cuda"
     feature_type: "glcm"
     fusion_type: "decision"
-    pipeline: "classical"
-    classifier: "svm"
+    pipeline: "quantum"
+    classifier: "vqc"
 
-  # - id: "glcm_decision_svm"
+  # - id: "glcm_decisionvqc"
   #   feature_type: "glcm"
   #   fusion_type: "decision"
-  #   pipeline: "classical"
-  #   classifier: "svm"
+  #   pipeline: "quantum"
+  #   classifier: "vqc"
 
-  # ── CLASSICAL: HOG ──────────────────────────────────────────
-  # - id: "hog_feature_svm"
+  # ── quantum: HOG ──────────────────────────────────────────
+  # - id: "hog_featurevqc"
   #   feature_type: "hog"
   #   fusion_type:  "feature"
-  #   pipeline:     "classical"
-  #   classifier:   "svm"
+  #   pipeline:     "quantum"
+  #   classifier:   "vqc"
 
-  # - id: "hog_decision_svm"
+  # - id: "hog_decisionvqc"
   #   feature_type: "hog"
   #   fusion_type:  "decision"
-  #   pipeline:     "classical"
-  #   classifier:   "svm"
+  #   pipeline:     "quantum"
+  #   classifier:   "vqc"
 
-  # - id: "hog_feature_svm"
+  # - id: "hog_featurevqc"
   #   feature_type: "hog"
   #   fusion_type:  "feature"
-  #   pipeline:     "classical"
-  #   classifier:   "svm"
+  #   pipeline:     "quantum"
+  #   classifier:   "vqc"
 
-  # - id: "hog_decision_svm"
+  # - id: "hog_decisionvqc"
   #   feature_type: "hog"
   #   fusion_type:  "decision"
-  #   pipeline:     "classical"
-  #   classifier:   "svm"
+  #   pipeline:     "quantum"
+  #   classifier:   "vqc"
 
   # # ── QUANTUM: GLCM ───────────────────────────────────────────
-  # - id: "glcm_feature_vqc"
+  # - id: "glcm_feature_vqc_cuda"
   #   feature_type: "glcm"
   #   fusion_type:  "feature"
   #   pipeline:     "quantum"
   #   classifier:   "vqc"
 
-  # - id: "glcm_decision_vqc"
+  # - id: "glcm_decision_vqc_cuda"
   #   feature_type: "glcm"
   #   fusion_type:  "decision"
   #   pipeline:     "quantum"
   #   classifier:   "vqc"
 
   # # ── QUANTUM: HOG ────────────────────────────────────────────
-  # - id: "hog_feature_vqc"
+  # - id: "hog_feature_vqc_cuda"
   #   feature_type: "hog"
   #   fusion_type:  "feature"
   #   pipeline:     "quantum"
   #   classifier:   "vqc"
 
-  # - id: "hog_decision_vqc"
+  # - id: "hog_decision_vqc_cuda"
   #   feature_type: "hog"
   #   fusion_type:  "decision"
   #   pipeline:     "quantum"
